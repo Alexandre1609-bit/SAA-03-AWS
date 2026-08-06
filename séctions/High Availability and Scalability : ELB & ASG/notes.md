@@ -272,3 +272,39 @@ Elastic Load Balancer - Connection Draining
 - Between 1 to 3600 seconds (default: 300 seconds)
 - Can be disabled (set value to 0)
 - Set to a low value if your requests are short
+
+Auto Scaling Group
+
+- In real-life, the load on your website and application can change
+- In the cloud, you can create and get rid of servers very quickly
+
+- The goal of an Auto Sclaing Gorup (ASG) is to:
+  - Scale out (add EC2 instances) to match an increased load
+  - Scale int (remove EC2 instances) to match a decreased load
+  - Ensutre we have a minimum and a maximum of EC2 instrances running
+  - Automatically register new instances to a load balancer
+  - Re-create an EC2 instance in case a previous one is terminated (ex: if unhealthy)
+- ASG are free (you only pay for the underlying EC2 instances)
+
+Auto Scaling Group attribute
+
+- A launch Template (older "Launch Configurations" are deprecated)
+  - AMI + instance Type
+  - EC2 User Data
+  - EBS Volumes
+  - Security Groups
+  - SSH Key Pair
+  - IAM Roles for your EC2 Instances
+  - Network + subnets Information
+  - Load Balancer Information
+- Min Size / Max Size / Initial Capacity
+- Scaling Policies
+
+Auto Scaling - CloudWatch Alarms & Scaling
+
+- It is possible to scale an ASG based on Cloud Watch alarms
+- An alamr monitors a metric (such as Average CPU, or a custom metric)
+- **Metrics such as Average CPU are computed for the overall ASG instances**
+- Based on alarm:
+  - We can create scale-out policies (increase the number of instances)
+  - We can create scale-in policies (decrease the number of instances)
