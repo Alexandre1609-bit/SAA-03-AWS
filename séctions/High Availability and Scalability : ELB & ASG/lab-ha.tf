@@ -1,3 +1,6 @@
+# LAB ONLY — not deployed.
+# AZs and certificate ARN are placeholders.
+
 ### Config ###
 
 terraform {
@@ -44,19 +47,18 @@ resource "aws_launch_template" "test-template" {
   }
 
   user_data = <<-EOS
-      #!/bin/bash
-      apt-get update
-      apt-get install -y nginx
-      systemctl start nginx
-      systemctl enable nginx
-      EOS
+        #!/bin/bash
+        apt-get update
+        apt-get install -y nginx
+        systemctl start nginx
+        systemctl enable nginx
+        EOS
 
   iam_instance_profile {
     name = aws_iam_instance_profile.real_inst_prof.name
   }
 
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-  security_group_names   = [aws_security_group.ec2_sg.name]
 
 }
 
@@ -68,8 +70,6 @@ module "alb" {
   name    = "my-alb"
   vpc_id  = aws_vpc.main_vpc.id
   subnets = [aws_subnet.subnet_one.id, aws_subnet.subnet_two.id]
-
-  #security_group_name = aws_security_group.allow_tls.name  à laisser et supprimer la partie juste en dessous ou pas ?
 
   # Security Group
   security_group_ingress_rules = {
@@ -122,13 +122,27 @@ module "alb" {
 
   target_groups = {
     inst_1 = {
-      name_prefix = "h1"
-      protocol    = "HTTP"
-      port        = 80
-      target_type = "instance"
-      target_id   = "i-0f6d38a07d50d080f"
+
+      name_prefix       = "h1"
+      protocol          = "HTTP"
+      port              = 80
+      target_type       = "instance"
+      create_attachment = false
+      health_check = {
+        enabled             = true
+        healthy_threshold   = 5
+        unhealthy_threshold = 7
+        path                = "/"
+        port                = 80
+        matcher             = "200"
+        protocol            = "HTTP"
+        interval            = 20
+
+      }
     }
   }
+
+
 
   tags = {
     Environment = "Development"
@@ -136,7 +150,28 @@ module "alb" {
   }
 }
 
-### TARGET GROUP ###
+### ASG ###
+
+resource "aws_autoscaling_group" "main_asg" {
+  name                      = "my-first-asg"
+  max_size                  = 5
+  min_size                  = 2
+  health_check_grace_period = 300
+  health_check_type         = "ALB"
+  desired_capacity          = 2
+  force_delete              = true
+  launch_template {
+    id      = aws_launch_template.test-template.id
+    version = "$Latest"
+  }
+  target_group_arns = [
+    module.alb.target_groups["inst_1"].arn
+  ]
+  vpc_zone_identifier = [aws_subnet.subnet_one.id, aws_subnet.subnet_two.id]
+
+}
+
+
 
 ### IAM ROLE ###
 
@@ -214,7 +249,7 @@ resource "aws_route_table_association" "assoc_snd" {
 
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2_sg"
-  description = "Allow TLS inbound traffic and all outbound traffic"
+  description = "Allow HTTP from ALB"
   vpc_id      = aws_vpc.main_vpc.id
 }
 

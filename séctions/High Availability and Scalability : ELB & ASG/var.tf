@@ -13,7 +13,7 @@ variable "vol_type" {
 variable "cidr_block_vpc_one" {
   description = "select cidr block for main vpc"
   type        = string
-  default     = "10.0.0.0/8"
+  default     = "10.0.0.0/16"
 }
 
 variable "region_vpc_first" {
@@ -29,3 +29,4 @@ variable "az_subnet_one" {
 variable "az_subnet_two" {
   type = string
 }
+
