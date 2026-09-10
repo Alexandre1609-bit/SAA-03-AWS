@@ -1,4 +1,9 @@
-Amazon RDS
+res on RDS
+
+- Aurora storage automatically growns in increments of **10GB**, up to **256TB**
+- Aurora can have up to 15 replicas and the preplication process is faster than MySQL (sub 10 ms replica lag)
+- Faliover in Aurora is instantaneous. It's HA narive.
+- Aurora cost more than RDS (20% more)
 
 RDS stands for **Relational Database Service**
 It's a managed DB service for DB that use **SQL** as a query language
@@ -43,7 +48,8 @@ RDS Read Replicas vs Multi AZ
 - Within AZ, Cross AZ or Cross Region
 - Replicas is **ASYNC**, so reads are eventually consistent
 - Replicas can be promoted to their own DB
-- Applications must update the connection string leverage read replicas
+- Applications must update the connec, but is more efficient
+  tion string leverage read replicas
 
 Use Cases
 
@@ -91,3 +97,44 @@ RDS Custom
 - RDS vs RDS Custom:
   - RDS: Entire database and the OS to be managed by AWs
   - RDS Custom: full admin access to the underlying OS and the database
+
+Amazon Aurora
+
+- Aurora is a proprietary technology from AWS (not open sourced)
+- Postgres and MySQL are both supported as Aurora DB (that mean your drivers will worl as if Aurora was a Postgres or MySQL database)
+- Aurora is "AWS cloud optimized" and claims 5x performance improvement over MySQL on RDS, over 3x the performance of Postgres on RDS
+- Aurora storage automatically growns in increments of **10GB**, up to **256TB**
+- Aurora can have up to 15 replicas and the preplication process is faster than MySQL (sub 10 ms replica lag)
+- Faliover in Aurora is instantaneous. It's HA narive.
+- Aurora cost more than RDS (20% more), but is more efficient
+
+Aurora high availability and read scaling
+
+- 6 copies of your data across 3 AZ:
+  - 4 copies out of 6 needed for writes
+  - 3 copies out of 6 need for reads
+  - Self healing with peer-to-peer replication
+  - Storage is striped across 100s volumes
+- One aurora instance takes writes (master)
+- Automated failover for master in less than 30 seconds
+- Master + up to 15 replicas serve reads (one of the read replicas can become master in case of failover)
+- Support for Cross Region Replcation
+
+Aurora DB cluster
+
+- One writer Endpoint pointing to the master
+  - Clients are redirected to this endpoint when they want to write (Master write on the Shared Storage Volume which expend form 10gig to 256tb)
+- One reader Endpoint (load balancer) which connect to all read replicas (**Read replicas can auto scale too**)
+  - Client are redirected to one of the available read replicas when reading data (Read from shared storage volume)
+
+Features of Aurora
+
+- Automatic fail-over
+- Backup and Recovery
+- Isolation and security
+- Industry compliance
+- Push-button scaling
+- Aotomated Patching with Zero Downtime
+- Adanced monitoring
+- routine Maintenance
+- Backtrack: restore data at any point of time without using backups
