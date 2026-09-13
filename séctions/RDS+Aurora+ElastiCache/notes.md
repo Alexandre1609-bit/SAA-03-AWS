@@ -138,3 +138,53 @@ Features of Aurora
 - Adanced monitoring
 - routine Maintenance
 - Backtrack: restore data at any point of time without using backups
+
+Aurora Replicas - Auto Scaling
+
+- Create more read replicas when large amount of read request comes in, scale reader endpoint in order to reduce CPU usage
+
+Aurora - Custom Endpoints
+
+- We can have differents instance types (r3.large, r5.2xlarge...)
+- Can have custom endpoint: use only this type of instance for specifif workload...
+- Define a subset of Aurora instances as a Custom endpoint
+- Example: Run analytical queries on specific replicas
+- The reader Endpoint is generally not used after defining Custom Endpoints
+
+Aurora Serverless
+
+- Automated database instantiation and auto-scaling based on actual usage
+- Good for infrequent, intermittent or unpredictable workloads
+- No capacity planning needed
+- Pay **per second**, can be more cost-effective
+- Client talk to a proxy fleet (managed by aurora) and scale according to the workloads
+
+Global Aurora
+
+- Aurora Cross Region read Replicas:
+  - Useful for disaster recovery
+  - Simple to put in place
+- Aurora global Database (recommended):
+  - 1 primary Region (read / write)
+  - Up to 10 secondary (read-only) regions, replication lag is less than 1 second
+  - Up to 16 read replicas per secondary region
+  - Helps of decreasing latency
+  - Promoting another region (for disaster recovery) has an RTO (Recovery time objective) of < 1 minutes
+  - **Typical cross-region replication takes less than 1 second**
+
+Aurora Machine Learning
+
+- Enable you to add ML-based predictions to your applications via SQL
+- Simple, optmized, and secue integration between Aurora ans AWS ML services
+- Suported services:
+  - Amazon SageMaker (use with any ML model)
+  - Amazon Comprehend (for sentiment analysis)
+- You don't nee to have ML experience
+- Use cases: fraud detection, ads targeting, sentimlent analysis, product recommendations
+
+Babelfish for Aurora PostgreSQL
+
+- Allow Aurora PostgreSQL to understand commands targeted for MS SQL Server (e.g., T-SQL)
+- Therefore Microsoft SQL Server based applications can work on Aurora PostgreSQL
+- Requires no to little code changes (using the same MS SQL server client driver)
+- the same applications can be used after a migration of your database (using AWS SCT and DMS)
