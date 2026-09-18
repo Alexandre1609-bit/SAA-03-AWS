@@ -188,3 +188,60 @@ Babelfish for Aurora PostgreSQL
 - Therefore Microsoft SQL Server based applications can work on Aurora PostgreSQL
 - Requires no to little code changes (using the same MS SQL server client driver)
 - the same applications can be used after a migration of your database (using AWS SCT and DMS)
+
+RDS Backups
+
+- Automated backups:
+  - Daily full backup of the database (during the backup window)
+  - Transaction logs are backed-up by RDS every 5 minutes
+  - -> Ability to restore to any point in time (from oldest to 5 minutes ago)
+  - 1 to 35 days of retention, set 0 to disable automated backups
+- Manual DB Snapshots
+  - Manually triggered by the user
+  - Retention of backup for as long as you want
+- Trick: in a stopped RDS database, you will still pay for storage. If you plan on stopping it for a long time, you should snapshot & restore instead.
+
+Aurora Backups
+
+- Automated bakcups
+  - 1 to 35 days (cannot be disabled)
+  - point-in-time recovery in that timeframe
+- Manual DB Snapshots
+  - Manually triggered by the user
+  - Retention of backup for as long as you want
+
+RDS & Aurora Restore options
+
+- Restoring a RDS / Aurora backup or a snapshot creates a new database
+- Restoring MySQL RDS database from S3
+  - Create a backup of your on-premises database
+  - Store it on Amazon S3 (object storage)
+  - Restore the backup file onto a new RDS instance running MySQL
+- Restoring MySQL Aurora cluster from S3
+  - Create a backup of your on-premises database using Percona XtraBackup
+  - Store the backup file on Amazon S3
+  - Restore the backup file onto a new Aurora cluster running MySQL
+
+Aurora Database Cloning
+
+- Create a new Aurora DB cluster form an existing one
+- Faster than snapshot & restore
+- Uses **copy-on-write** protocol
+  - Initially, the new DB cluster uses the same data volume as the original DB cluster (fast and efficient, no copying is needed)
+  - When updates are made to the new Db cluster data, then additional storage is allocated ans data is copied to be separated
+- Very fast & cost-effective
+- **Useful to vreate a "staging" database from a "production" databse without impacting the production database.**
+
+RDS & Aurora Security
+
+- At-rest encryption:
+  - Database master & replicas encryption using AWS KMS: must be defined as launch time
+  - If the master is not encrypted, the read database cannot be encrypted
+  - To encrypt an un-encrypted database, go though a DB snapshot & restore as encrypted
+- In-flight encryption: TLS-ready by defaults, use AWS TLS root certificates client-side
+- IAM Authentication: IAM roles to connect to your database (instead of username/pw)
+- Security groups: Control Netwok access to your RDS / Aurora db
+- No SSH available except on RDS Custom
+- Audit Logs can be enabled and sent to cloudwatch Logs for longer retention
+
+Amazon RDS Proxy
