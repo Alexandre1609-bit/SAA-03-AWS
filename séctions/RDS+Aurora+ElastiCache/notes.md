@@ -245,3 +245,13 @@ RDS & Aurora Security
 - Audit Logs can be enabled and sent to cloudwatch Logs for longer retention
 
 Amazon RDS Proxy
+
+- Fully managed database proxy for RDS
+- Allows apps to pool and share DB connections established with the database
+- **Improving database efficiency by reducing the stress on database resources (e.g., CPU, RAM) and minimize open connections (and timeouts)**
+- Serverless, autoscaling, highly available (multi-AZ)
+- **Reduced RDS & Aurora failover time by up 66%**
+- supports RDS (MySQL, MariaDB, MS SQL Server) and Aurora (MySQL, PostgreSQL)
+- No code changes required for most apps
+- **enforce IAM Authentication for BD, and securely store credentials in AWS Secret Manager**
+- **RDS Porxy is nerver publicly available (must be accessed from VPC)**
