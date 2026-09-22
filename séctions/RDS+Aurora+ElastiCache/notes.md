@@ -255,3 +255,42 @@ Amazon RDS Proxy
 - No code changes required for most apps
 - **enforce IAM Authentication for BD, and securely store credentials in AWS Secret Manager**
 - **RDS Porxy is nerver publicly available (must be accessed from VPC)**
+
+Amazon ElastiCache
+
+- The same way RDS is to get managed Relational Databases.
+- ElastiCache is to get managed Redis or Memcached
+- Caches are in-memory databases with really high performance, low latency
+- Helps reduce load off of databases for read intensive workloads
+- Helps make your application stateless
+- AWS take care of OS maintenance / patching, optimizations, setup, configuration, monitoring, failure recovery and backups
+- **Using ElastiCache involves heavy application code changes**
+
+ElastiCache - DB Cache
+
+- Applications queries ElastiCache, if not available, get from RDS and store in ElastiCache
+- Helps relieve load in RDS
+- Cache must have an invalidation stategy to make sure only the most current data is used in there
+
+ElastiCache - User Session Store
+
+- User logs into any of the application
+- The application writes the session data into ElastiCache
+- The user hits another instance of our application
+- The instance retrives the data and the user is already logged in
+
+ElastiCache - Redis vs Memcached
+
+- Redis
+  - MultiAZ with auto-failover
+  - Read replicas to scale reads and have high availability
+  - Data durability using AOF persistence
+  - Backip and restore features
+  - Supports Sets and Sorted Sets
+
+- Memcached
+  - Multi-node for partioning of data (sharding)
+  - No high availability (replication)
+  - Non persistent
+  - Backup and restore (serverless)
+  - Multi-thread architecture
