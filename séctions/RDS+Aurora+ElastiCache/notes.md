@@ -294,3 +294,26 @@ ElastiCache - Redis vs Memcached
   - Non persistent
   - Backup and restore (serverless)
   - Multi-thread architecture
+
+ElastiCache - Security
+
+- ElastiCache supports IAM Authentication for Redis
+- IAM policies on ElastiCache are only used for AWS API-level security
+- Redis AUTH
+  - you can set a "password/token" when you create a Redis cluster
+  - This is an extra level of security for your cache (on top of security groups)
+  - Support SSL in flight encryption
+- Memcached
+  - Supports SASL-based authentication (advanced)
+
+Patterns for ElastiCache
+
+- **Lazy loading:** all the read data is cached, data can become stale in cache.
+- **Write Through:** Adds or update data in the cache when written to a DB (no stole data)
+- **Session Store:** store temporary session data in a cache (using TTL features)
+
+ElastiCache - Redis Use Case
+
+- Gaming Leaderboards are computationally complex
+- **Redis sorted sets** guarantee both uniqueness and element ordering
+- Each time a new element is added, it's ranked in real time, then added in correct order
